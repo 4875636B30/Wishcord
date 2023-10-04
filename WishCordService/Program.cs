@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 namespace WishCordService {
     internal class Program {
         static void Main(string[] args) {
+            Console.WriteLine("Czaker ist beschte.s");
+            Console.Read();
         }
     }
 }
