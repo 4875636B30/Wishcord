@@ -15,6 +15,7 @@ using Utility;
 using System.Net.Http;
 
 namespace WishCordService {
+    #region ChatInterfaces
     [ServiceContract]
     public interface IChat {
         [OperationContract]
@@ -46,6 +47,9 @@ namespace WishCordService {
         [OperationContract]
         void NewMessage(Message message);
     }
+    #endregion
+
+    #region ChatClasses
     public class Chat : IBetterChat {
         static LinkedList<IBetterChatDistribute> channels = new LinkedList<IBetterChatDistribute>();
 
@@ -123,13 +127,15 @@ namespace WishCordService {
             Timestamp = timeStamp;
         }
     }
+    #endregion
 
     internal class Program {
         
-        static void Main(string[] args) {            
+        static void Main(string[] args) {
 
+            
             string URI = "http://"+IPAdress.GetIPv4Adress()+":2310/WishCord";
-
+            Console.WriteLine(URI);
             ServiceHost chatService = new ServiceHost(typeof(Chat));
 
             chatService.AddServiceEndpoint(typeof(IChat), new WSHttpBinding(SecurityMode.None), URI);
