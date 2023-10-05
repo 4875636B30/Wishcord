@@ -6,7 +6,13 @@ using System.Threading.Tasks;
 using System.ServiceModel;
 using System.Runtime.ConstrainedExecution;
 using System.Security.Policy;
+using System.Drawing;
 using System.ServiceModel.Channels;
+using System.Security.Cryptography;
+using System.ServiceModel.Security;
+using System.Net;
+using Utility;
+using System.Net.Http;
 
 namespace WishCordService {
     [ServiceContract]
@@ -14,22 +20,55 @@ namespace WishCordService {
         [OperationContract]
         string WhichServiceAmI();
         [OperationContract]
-        void NewMessage(string message);
-        [OperationContract]
         void NewClient(string clientUrl);
+        [OperationContract]
+        void NewMessage(string message);
     }
+
+    [ServiceContract]
+    public interface IBetterChat : IChat{
+        [OperationContract]
+        bool NewClient(string clientUrl, string username, Color userColor, Bitmap profilePicture);
+        [OperationContract]
+        void ClientLeave(IBetterChatDistribute channel);
+        [OperationContract]
+        void NewMessage(Message message);
+
+    }
+
     [ServiceContract]
     public interface IChatDistribute {
         [OperationContract]
         void NewMessage(string mesage);
     }
-    public class Chat : IChat {
-        List<IChatDistribute> channels = new List<IChatDistribute>();
+    [ServiceContract]
+    public interface IBetterChatDistribute : IChatDistribute{
+        [OperationContract]
+        void NewMessage(Message message);
+    }
+    public class Chat : IBetterChat {
+        static LinkedList<IBetterChatDistribute> channels = new LinkedList<IBetterChatDistribute>();
+
+        public void ClientLeave(IBetterChatDistribute channel) {
+            channels.Remove(channel);
+        }
+
         public void NewClient(string clientUrl) {
-            channels.Add((new ChannelFactory<IChatDistribute>(new WSHttpBinding(SecurityMode.None), clientUrl)).CreateChannel());
+            channels.AddLast((new ChannelFactory<IBetterChatDistribute>(new WSHttpBinding(SecurityMode.None), clientUrl)).CreateChannel());
+        }
+
+        public bool NewClient(string clientUrl, string username, Color userColor, Bitmap profilePicture) {
+            channels.AddLast((new ChannelFactory<IBetterChatDistribute>(new WSHttpBinding(SecurityMode.None), clientUrl)).CreateChannel());
+            return true;
         }
 
         public void NewMessage(string message) {
+            foreach(var channel in channels) {
+                channel.NewMessage(message);
+            }
+        }
+
+        public void NewMessage(Message message) {
             foreach(var channel in channels) {
                 channel.NewMessage(message);
             }
@@ -39,10 +78,57 @@ namespace WishCordService {
             return "WishCord";
         }
     }
-    internal class Program {
-        static void Main(string[] args) {
+    public class Client {
+        private string username;
+        private Bitmap profilePicture;
+        private Color userColor;
 
-            string URI = "http://localhost:2310/WishCord";
+        private string Username { get; set; }
+        private Bitmap ProfilePicture { get; set; }
+        private Color UserColor { get; set; }
+
+        Client() {
+            Username = string.Empty;
+            ProfilePicture = null;
+            UserColor = Color.Empty;
+        }
+
+        Client(string username, Bitmap profilePicture, Color userColor) {
+            Username = username;
+            ProfilePicture = profilePicture;
+            UserColor = userColor;
+            Username = username;
+            ProfilePicture = profilePicture;
+            UserColor = userColor;
+        }
+    }
+    public class Message {
+        private string messageText;
+        private string username;
+        private DateTime timestamp;
+
+        private string MessageText { get; set; }
+        private string Username { get; set; }
+        private DateTime Timestamp { get; set; }
+
+        Message() {
+            MessageText = "null";
+            Username = "null";
+            Timestamp = DateTime.Now;
+        }
+
+        Message(string messageText, string username, DateTime timeStamp) {
+            MessageText = messageText;
+            Username = username;
+            Timestamp = timeStamp;
+        }
+    }
+
+    internal class Program {
+        
+        static void Main(string[] args) {            
+
+            string URI = "http://"+IPAdress.GetIPv4Adress()+":2310/WishCord";
 
             ServiceHost chatService = new ServiceHost(typeof(Chat));
 

@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WishCordService", "WishCord
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WishCordClient", "WishCordClient\WishCordClient.csproj", "{53986EA2-8DD7-423D-BF15-D2C7D620CD35}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utility", "Utility\Utility.csproj", "{750DA7DA-EE53-4309-AFBF-C103CFCE2C01}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{53986EA2-8DD7-423D-BF15-D2C7D620CD35}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{53986EA2-8DD7-423D-BF15-D2C7D620CD35}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{53986EA2-8DD7-423D-BF15-D2C7D620CD35}.Release|Any CPU.Build.0 = Release|Any CPU
+		{750DA7DA-EE53-4309-AFBF-C103CFCE2C01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{750DA7DA-EE53-4309-AFBF-C103CFCE2C01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{750DA7DA-EE53-4309-AFBF-C103CFCE2C01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{750DA7DA-EE53-4309-AFBF-C103CFCE2C01}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
